@@ -3,90 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aplikasi Bendahara & Siswa</title>
+    <title>Aplikasi Sekolah</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* CSS Sederhana untuk Navigasi */
+        nav { background: #333; padding: 10px; margin-bottom: 20px; }
+        nav button { margin-right: 10px; padding: 8px 15px; cursor: pointer; }
+        .halaman { display: none; } /* Sembunyikan semua halaman dulu */
+        #halaman-keuangan { display: block; } /* Default munculkan keuangan */
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
 </head>
 <body>
 
     <nav>
-        <div class="nav-brand">🏫 App Sekolah</div>
-        <div class="nav-buttons">
-            <button onclick="bukaHalaman('keuangan')" class="active">💰 Keuangan</button>
-            <button onclick="bukaHalaman('siswa')">🎓 Data Siswa</button>
-        </div>
+        <button onclick="bukaHalaman('keuangan')">💰 Keuangan</button>
+        <button onclick="bukaHalaman('siswa')">🎓 Data Siswa</button>
     </nav>
 
-    <div class="container">
-        
-        <div id="halaman-keuangan" class="halaman">
-            <h2>Input Transaksi Keuangan</h2>
-            <div class="card">
-                <form name="form-transaksi">
-                    <input type="hidden" name="action" value="simpan_transaksi">
-                    
-                    <div class="form-group">
-                        <label>Keterangan</label>
-                        <input type="text" name="keterangan" placeholder="Contoh: Iuran Bulanan" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Uang Masuk (Rp)</label>
-                        <input type="number" name="masuk" placeholder="0">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Uang Keluar (Rp)</label>
-                        <input type="number" name="keluar" placeholder="0">
-                    </div>
-
-                    <button type="submit" class="btn-primary">Simpan Transaksi</button>
-                </form>
-            </div>
-        </div>
-
-        <div id="halaman-siswa" class="halaman" style="display: none;">
-            <h2>Manajemen Data Siswa</h2>
+    <div id="halaman-keuangan" class="halaman">
+        <h2>Input Keuangan</h2>
+        <form name="form-transaksi">
+            <input type="hidden" name="action" value="simpan_transaksi">
             
-            <div class="card">
-                <h3>Tambah Siswa Baru</h3>
-                <form name="form-siswa">
-                    <input type="hidden" name="action" value="simpan_siswa">
-                    
-                    <div class="row">
-                        <input type="number" name="nis" placeholder="NIS" required>
-                        <input type="text" name="nama" placeholder="Nama Lengkap" required>
-                    </div>
-                    <div class="row">
-                        <input type="text" name="kelas" placeholder="Kelas (X/XI/XII)" required>
-                        <input type="text" name="jurusan" placeholder="Jurusan (IPA/IPS)" required>
-                    </div>
-                    
-                    <button type="submit" class="btn-success">Simpan Data Siswa</button>
-                </form>
-            </div>
+            <input type="text" name="keterangan" placeholder="Keterangan" required><br><br>
+            <input type="number" name="masuk" placeholder="Uang Masuk"><br><br>
+            <input type="number" name="keluar" placeholder="Uang Keluar"><br><br>
+            <button type="submit">Simpan Transaksi</button>
+        </form>
+    </div>
 
-            <div class="card">
-                <div class="header-row">
-                    <h3>Daftar Siswa</h3>
-                    <button onclick="loadDataSiswa()" class="btn-outline">🔄 Refresh Data</button>
-                </div>
+    <div id="halaman-siswa" class="halaman">
+        <h2>Operasional Data Siswa</h2>
+        
+        <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 20px;">
+            <h3>Tambah Siswa Baru</h3>
+            <form name="form-siswa">
+                <input type="hidden" name="action" value="simpan_siswa">
                 
-                <table id="tabel-siswa">
-                    <thead>
-                        <tr>
-                            <th>NIS</th>
-                            <th>Nama</th>
-                            <th>Kelas</th>
-                            <th>Jurusan</th>
-                        </tr>
-                    </thead>
-                    <tbody id="body-tabel-siswa">
-                        <tr><td colspan="4" style="text-align:center">Klik Refresh untuk memuat data...</td></tr>
-                    </tbody>
-                </table>
-            </div>
+                <input type="number" name="nis" placeholder="NIS" required>
+                <input type="text" name="nama" placeholder="Nama Lengkap" required>
+                <input type="text" name="kelas" placeholder="Kelas" required>
+                <input type="text" name="jurusan" placeholder="Jurusan" required>
+                <button type="submit">Simpan Data Siswa</button>
+            </form>
         </div>
 
+        <h3>Daftar Siswa</h3>
+        <button onclick="loadDataSiswa()">🔄 Refresh Data</button>
+        <table id="tabel-siswa">
+            <thead>
+                <tr>
+                    <th>NIS</th>
+                    <th>Nama</th>
+                    <th>Kelas</th>
+                    <th>Jurusan</th>
+                </tr>
+            </thead>
+            <tbody id="body-tabel-siswa">
+                </tbody>
+        </table>
     </div>
 
     <script src="script.js"></script>
