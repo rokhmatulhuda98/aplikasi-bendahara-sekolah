@@ -2,18 +2,93 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Aplikasi Bendahara Sekolah</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Bendahara & Siswa</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Input Kas Bendahara</h1>
-    <form name="form-bendahara">
-        <input type="text" name="Keterangan" placeholder="Keterangan Transaksi" required>
+
+    <nav>
+        <div class="nav-brand">🏫 App Sekolah</div>
+        <div class="nav-buttons">
+            <button onclick="bukaHalaman('keuangan')" class="active">💰 Keuangan</button>
+            <button onclick="bukaHalaman('siswa')">🎓 Data Siswa</button>
+        </div>
+    </nav>
+
+    <div class="container">
         
-        <input type="number" name="Masuk" placeholder="Jumlah Uang Masuk" required>
-        
-        <button type="submit">Simpan</button>
-    </form>
+        <div id="halaman-keuangan" class="halaman">
+            <h2>Input Transaksi Keuangan</h2>
+            <div class="card">
+                <form name="form-transaksi">
+                    <input type="hidden" name="action" value="simpan_transaksi">
+                    
+                    <div class="form-group">
+                        <label>Keterangan</label>
+                        <input type="text" name="keterangan" placeholder="Contoh: Iuran Bulanan" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Uang Masuk (Rp)</label>
+                        <input type="number" name="masuk" placeholder="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Uang Keluar (Rp)</label>
+                        <input type="number" name="keluar" placeholder="0">
+                    </div>
+
+                    <button type="submit" class="btn-primary">Simpan Transaksi</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="halaman-siswa" class="halaman" style="display: none;">
+            <h2>Manajemen Data Siswa</h2>
+            
+            <div class="card">
+                <h3>Tambah Siswa Baru</h3>
+                <form name="form-siswa">
+                    <input type="hidden" name="action" value="simpan_siswa">
+                    
+                    <div class="row">
+                        <input type="number" name="nis" placeholder="NIS" required>
+                        <input type="text" name="nama" placeholder="Nama Lengkap" required>
+                    </div>
+                    <div class="row">
+                        <input type="text" name="kelas" placeholder="Kelas (X/XI/XII)" required>
+                        <input type="text" name="jurusan" placeholder="Jurusan (IPA/IPS)" required>
+                    </div>
+                    
+                    <button type="submit" class="btn-success">Simpan Data Siswa</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <div class="header-row">
+                    <h3>Daftar Siswa</h3>
+                    <button onclick="loadDataSiswa()" class="btn-outline">🔄 Refresh Data</button>
+                </div>
+                
+                <table id="tabel-siswa">
+                    <thead>
+                        <tr>
+                            <th>NIS</th>
+                            <th>Nama</th>
+                            <th>Kelas</th>
+                            <th>Jurusan</th>
+                        </tr>
+                    </thead>
+                    <tbody id="body-tabel-siswa">
+                        <tr><td colspan="4" style="text-align:center">Klik Refresh untuk memuat data...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>
