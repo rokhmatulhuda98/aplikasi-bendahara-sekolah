@@ -3,69 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aplikasi Sekolah</title>
+    <title>Sistem Bendahara Sekolah</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        /* CSS Sederhana untuk Navigasi */
-        nav { background: #333; padding: 10px; margin-bottom: 20px; }
-        nav button { margin-right: 10px; padding: 8px 15px; cursor: pointer; }
-        .halaman { display: none; } /* Sembunyikan semua halaman dulu */
-        #halaman-keuangan { display: block; } /* Default munculkan keuangan */
-        
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background-color: #f2f2f2; }
-    </style>
 </head>
 <body>
 
     <nav>
-        <button onclick="bukaHalaman('keuangan')">💰 Keuangan</button>
-        <button onclick="bukaHalaman('siswa')">🎓 Data Siswa</button>
+        <h1>Bendahara App</h1>
+        <div>
+            <button onclick="bukaHalaman('keuangan')">💰 Keuangan</button>
+            <button onclick="bukaHalaman('siswa')">🎓 Data Siswa</button>
+            <button onclick="bukaHalaman('spp')">💳 Bayar SPP</button>
+        </div>
     </nav>
 
     <div id="halaman-keuangan" class="halaman">
-        <h2>Input Keuangan</h2>
-        <form name="form-transaksi">
-            <input type="hidden" name="action" value="simpan_transaksi">
-            
-            <input type="text" name="keterangan" placeholder="Keterangan" required><br><br>
-            <input type="number" name="masuk" placeholder="Uang Masuk"><br><br>
-            <input type="number" name="keluar" placeholder="Uang Keluar"><br><br>
-            <button type="submit">Simpan Transaksi</button>
-        </form>
+        <h2>Input Kas Sekolah</h2>
+        
+        <div class="card">
+            <h3>Input Manual</h3>
+            <form name="form-transaksi">
+                <input type="hidden" name="action" value="simpan_transaksi">
+                <input type="text" name="keterangan" placeholder="Keterangan (mis: Beli Spidol)" required>
+                <input type="number" name="masuk" placeholder="Uang Masuk (Rp)">
+                <input type="number" name="keluar" placeholder="Uang Keluar (Rp)">
+                <button type="submit">Simpan Transaksi</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h3>Scan Bukti Transfer (AI)</h3>
+            <input type="file" id="inputFile" accept="image/*">
+            <button id="btnScan">Scan & Simpan Otomatis</button>
+            <p id="statusScan" style="font-style: italic; color: #666;"></p>
+        </div>
     </div>
 
     <div id="halaman-siswa" class="halaman">
-        <h2>Operasional Data Siswa</h2>
+        <h2>Data Siswa</h2>
         
-        <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 20px;">
+        <div class="card">
             <h3>Tambah Siswa Baru</h3>
             <form name="form-siswa">
                 <input type="hidden" name="action" value="simpan_siswa">
-                
                 <input type="number" name="nis" placeholder="NIS" required>
                 <input type="text" name="nama" placeholder="Nama Lengkap" required>
                 <input type="text" name="kelas" placeholder="Kelas" required>
                 <input type="text" name="jurusan" placeholder="Jurusan" required>
-                <button type="submit">Simpan Data Siswa</button>
+                <button type="submit">Simpan Data</button>
             </form>
         </div>
 
-        <h3>Daftar Siswa</h3>
-        <button onclick="loadDataSiswa()">🔄 Refresh Data</button>
-        <table id="tabel-siswa">
-            <thead>
-                <tr>
-                    <th>NIS</th>
-                    <th>Nama</th>
-                    <th>Kelas</th>
-                    <th>Jurusan</th>
-                </tr>
-            </thead>
-            <tbody id="body-tabel-siswa">
+        <div class="card">
+            <h3>Daftar Siswa</h3>
+            <button onclick="loadDataSiswa()" class="btn-refresh">🔄 Refresh Tabel</button>
+            <table>
+                <thead>
+                    <tr>
+                        <th>NIS</th>
+                        <th>Nama</th>
+                        <th>Kelas</th>
+                        <th>Status Terakhir</th>
+                    </tr>
+                </thead>
+                <tbody id="body-tabel-siswa">
+                    <tr><td colspan="4">Klik Refresh untuk memuat data...</td></tr>
                 </tbody>
-        </table>
+            </table>
+        </div>
+    </div>
+
+    <div id="halaman-spp" class="halaman">
+        <h2>Pembayaran SPP</h2>
+        <div class="card">
+            <form name="form-spp">
+                <input type="hidden" name="action" value="bayar_spp">
+                
+                <label>Pilih Siswa:</label>
+                <select id="pilih-siswa" style="width: 100%; padding: 10px; margin: 10px 0;">
+                    <option value="">-- Muat data dulu di menu Siswa --</option>
+                </select>
+                <input type="hidden" name="nis" id="spp-nis">
+                <input type="hidden" name="nama" id="spp-nama">
+
+                <label>Untuk Bulan:</label>
+                <select name="bulan" style="width: 100%; padding: 10px; margin: 10px 0;">
+                    <option value="Januari">Januari</option>
+                    <option value="Februari">Februari</option>
+                    <option value="Maret">Maret</option>
+                    <option value="April">April</option>
+                    <option value="Mei">Mei</option>
+                    <option value="Juni">Juni</option>
+                </select>
+
+                <label>Nominal (Rp):</label>
+                <input type="number" name="nominal" placeholder="Contoh: 150000" required>
+
+                <button type="submit" style="background-color: #27ae60;">Bayar & Cetak Invoice</button>
+            </form>
+        </div>
     </div>
 
     <script src="script.js"></script>
