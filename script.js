@@ -156,18 +156,43 @@ function kirimData(formEl, pesan) {
 }
 
 function cetakInvoice(data) {
-    var win = window.open('', '', 'height=500,width=800');
-    var html = `
-        <html><body style="font-family: monospace; padding: 20px;">
-            <center><h2>BUKTI BAYAR SPP</h2><hr></center>
-            <p>No Invoice: ${data.invoice_id}</p>
-            <p>Tanggal: ${data.tanggal}</p>
-            <p>Siswa: ${data.nama} (${data.nis})</p>
-            <p>Pembayaran: SPP Bulan ${data.bulan}</p>
-            <h3 style="text-align:right; border-top:1px dashed #000; padding-top:10px;">
-                TOTAL: Rp ${parseInt(data.nominal).toLocaleString('id-ID')}
-            </h3>
-            <script>window.print();</script>
-        </body></html>`;
-    win.document.write(html);
+    // Pastikan library jsPDF sudah terload
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // --- DESAIN PDF ---
+    
+    // Judul (Tengah)
+    doc.setFontSize(18);
+    doc.text("SMK CONTOH BANGSA", 105, 20, null, null, "center");
+    doc.setFontSize(14);
+    doc.text("BUKTI PEMBAYARAN SPP", 105, 30, null, null, "center");
+    
+    // Garis Pemisah
+    doc.setLineWidth(0.5);
+    doc.line(20, 35, 190, 35);
+
+    // Isi Data (Kiri)
+    doc.setFontSize(12);
+    doc.text(`No Invoice   : ${data.invoice_id}`, 20, 50);
+    doc.text(`Tanggal      : ${data.tanggal}`, 20, 60);
+    doc.text(`NIS Siswa    : ${data.nis}`, 20, 70);
+    doc.text(`Nama Siswa   : ${data.nama}`, 20, 80);
+    doc.text(`Pembayaran   : SPP Bulan ${data.bulan}`, 20, 90);
+
+    // Garis Pemisah Total
+    doc.line(20, 100, 190, 100);
+
+    // Total (Kanan Bawah)
+    doc.setFontSize(16);
+    doc.text(`TOTAL: Rp ${parseInt(data.nominal).toLocaleString('id-ID')}`, 190, 115, null, null, "right");
+
+    // Footer (Tengah Bawah)
+    doc.setFontSize(10);
+    doc.setTextColor(100);
+    doc.text("*Dokumen ini sah dan dicetak otomatis oleh sistem.", 105, 130, null, null, "center");
+
+    // --- AKSI DOWNLOAD OTOMATIS ---
+    // Nama file: Invoice-NamaSiswa.pdf
+    doc.save(`Invoice-${data.nama}.pdf`);
 }
