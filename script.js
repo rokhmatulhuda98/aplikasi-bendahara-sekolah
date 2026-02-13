@@ -6,9 +6,8 @@ function bukaHalaman(namaHalaman) {
     document.getElementById('halaman-' + namaHalaman).style.display = 'block';
     
     // Jika buka tab SPP, otomatis refresh data siswa untuk dropdown
-    if (namaHalaman === 'spp' || namaHalaman === 'siswa') {
-        loadDataSiswa(); 
-    }
+    if (namaHalaman === 'spp' || namaHalaman === 'siswa') loadDataSiswa();
+    if (namaHalaman === 'dashboard') loadDashboard();
 }
 
 // --- 2. LOGIKA KEUANGAN (TRANSAKSI) ---
@@ -196,3 +195,81 @@ function cetakInvoice(data) {
     // Nama file: Invoice-NamaSiswa.pdf
     doc.save(`Invoice-${data.nama}.pdf`);
 }
+
+// --- 6. LOGIKA DASHBOARD & GRAFIK ---
+let myChartKeuangan = null;
+let myChartSiswa = null;
+
+function loadDashboard() {
+    // Tampilkan loading di angka
+    document.getElementById('dash-masuk').innerText = "Loading...";
+    document.getElementById('dash-saldo').innerText = "Loading...";
+
+    const formData = new FormData();
+    formData.append('action', 'ambil_dashboard');
+
+    fetch(scriptURL, { method: 'POST', body: formData })
+        .then(res => res.json())
+        .then(json => {
+            if (json.result === 'success') {
+                const d = json.data;
+
+                // 1. Update Angka Kartu (Format Rupiah)
+                const fmt = (num) => "Rp " + parseInt(num).toLocaleString('id-ID');
+                document.getElementById('dash-masuk').innerText = fmt(d.masuk);
+                document.getElementById('dash-keluar').innerText = fmt(d.keluar);
+                document.getElementById('dash-saldo').innerText = fmt(d.saldo);
+
+                // 2. Update Grafik Keuangan (Bar Chart)
+                updateChartKeuangan(d.masuk, d.keluar);
+
+                // 3. Update Grafik Siswa (Pie Chart)
+                updateChartSiswa(d.siswa_lunas, d.siswa_belum);
+            }
+        });
+}
+
+function updateChartKeuangan(masuk, keluar) {
+    const ctx = document.getElementById('chartKeuangan').getContext('2d');
+    
+    // Hancurkan chart lama jika ada (biar tidak numpuk/glitch)
+    if (myChartKeuangan) myChartKeuangan.destroy();
+
+    myChartKeuangan = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Pemasukan', 'Pengeluaran'],
+            datasets: [{
+                label: 'Total (Rp)',
+                data: [masuk, keluar],
+                backgroundColor: ['#2ecc71', '#e74c3c'],
+                borderWidth: 1
+            }]
+        },
+        options: { responsive: true }
+    });
+}
+
+function updateChartSiswa(lunas, belum) {
+    const ctx = document.getElementById('chartSiswa').getContext('2d');
+
+    if (myChartSiswa) myChartSiswa.destroy();
+
+    myChartSiswa = new Chart(ctx, {
+        type: 'doughnut', // Grafik Donat
+        data: {
+            labels: ['Lunas', 'Belum Lunas'],
+            datasets: [{
+                data: [lunas, belum],
+                backgroundColor: ['#3498db', '#95a5a6'],
+                borderWidth: 1
+            }]
+        },
+        options: { responsive: true }
+    });
+}
+
+// Panggil dashboard saat pertama kali web dibuka
+document.addEventListener('DOMContentLoaded', () => {
+    bukaHalaman('dashboard'); // Default buka dashboard
+});

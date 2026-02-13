@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistem Bendahara Sekolah</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,11 +13,42 @@
     <nav>
         <h1>Bendahara App</h1>
         <div>
+            <button onclick="bukaHalaman('dashboard')">📊 Dashboard</button>
             <button onclick="bukaHalaman('keuangan')">💰 Keuangan</button>
             <button onclick="bukaHalaman('siswa')">🎓 Data Siswa</button>
             <button onclick="bukaHalaman('spp')">💳 Bayar SPP</button>
         </div>
     </nav>
+
+    <div id="halaman-dashboard" class="halaman">
+        <h2>Ringkasan Sekolah</h2>
+        
+        <div class="dashboard-cards">
+            <div class="card-summary" style="background: #2ecc71;">
+                <h3>Uang Masuk</h3>
+                <p id="dash-masuk">Rp 0</p>
+            </div>
+            <div class="card-summary" style="background: #e74c3c;">
+                <h3>Uang Keluar</h3>
+                <p id="dash-keluar">Rp 0</p>
+            </div>
+            <div class="card-summary" style="background: #3498db;">
+                <h3>Saldo Saat Ini</h3>
+                <p id="dash-saldo">Rp 0</p>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <div class="card">
+                <h3>Arus Kas</h3>
+                <canvas id="chartKeuangan"></canvas>
+            </div>
+            <div class="card">
+                <h3>Status Pembayaran Siswa</h3>
+                <canvas id="chartSiswa"></canvas>
+            </div>
+        </div>
+    </div>
 
     <div id="halaman-keuangan" class="halaman">
         <h2>Input Kas Sekolah</h2>
